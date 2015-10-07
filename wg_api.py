@@ -30,7 +30,7 @@ def get_nicknames_by_ids(user_ids):
     """
     get users nickname by his id
 
-    >>> get_nickname_by_id([30926868])
+    >>> get_nicknames_by_ids([30926868])
     {'NoOneiSPerfect'}
     """
     assert type(user_ids) == list
@@ -53,9 +53,7 @@ def get_nicknames_by_clan_tag(clan_tag):
     >> type(get_nicknames_by_clan_tag("XG"))
     {'BANDIT_N1_', '____BAUR____', 'CrazyRussMan', 'RoniN311', 'tema62regeon', 'Misterformazon', 'LiverpoolRed'...}
     >>> type(get_nicknames_by_clan_tag("XG"))
-    set
-    >>> type(get_nicknames_by_clan_tag("XG")[0])
-    str
+    <class 'set'>
     >>> 'NoOneiSPerfect' in get_nicknames_by_clan_tag("XG")
     True
     """
@@ -101,9 +99,9 @@ def check_text_for_user_from_clans(text, clans_tag=config.clans_for_watching):
 
 
 
-if __name__ == "__main__":
-    #print(get_clan_id_by_tag("XG"))
-    #print(get_nickname_by_id([30926868]))
-    #check_text_for_user_from_clans("blah blah2*blah3")
-    #print (get_nicknames_by_clan_tag("XG"))
-    print(check_text_for_user_from_clans("WubZero % a;slkdjf aabs liasdflk Lihei 4 Gadino_"))
+# if __name__ == "__main__":
+#     #print(get_clan_id_by_tag("XG"))
+#     #print(get_nickname_by_id([30926868]))
+#     #check_text_for_user_from_clans("blah blah2*blah3")
+#     #print (get_nicknames_by_clan_tag("XG"))
+#     print(check_text_for_user_from_clans("WubZero % a;slkdjf aabs liasdflk Lihei 4 Gadino_"))
