@@ -23,6 +23,8 @@ def my_form_post():
 
     #processed_text = text.upper()
     processed_text = "<br>".join(wg_api.check_text_for_user_from_clans(text))
+    if processed_text == "":
+        processed_text = "Nothing Found"
     return processed_text
 
 
