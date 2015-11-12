@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 __author__ = 'onotole'
 import config
-#import doctest
+import doctest
 import requests
 import re
 
@@ -31,7 +32,7 @@ def get_nicknames_by_ids(user_ids):
     get users nickname by his id
 
     >>> get_nicknames_by_ids([30926868])
-    {'NoOneiSPerfect'}
+    set([u'NoOneiSPerfect'])
     """
     assert type(user_ids) == list
     if type(user_ids[0]) == int:
@@ -53,7 +54,7 @@ def get_nicknames_by_clan_tag(clan_tag):
     >> type(get_nicknames_by_clan_tag("XG"))
     {'BANDIT_N1_', '____BAUR____', 'CrazyRussMan', 'RoniN311', 'tema62regeon', 'Misterformazon', 'LiverpoolRed'...}
     >>> type(get_nicknames_by_clan_tag("XG"))
-    <class 'set'>
+    <type 'set'>
     >>> 'NoOneiSPerfect' in get_nicknames_by_clan_tag("XG")
     True
     """
@@ -96,6 +97,31 @@ def check_text_for_user_from_clans(text, clans_tag=config.clans_for_watching):
             nicks_from_our_clan.add(word)
     return list(nicks_from_our_clan)
 
+
+def username_exist_wot_blitz_ru(username):
+    """
+    check nickname for exist at ru server
+    >>> username_exist_wot_blitz_ru("NoOneIsPerfect")
+    True
+    >>> username_exist_wot_blitz_ru("Bl")
+    False
+    >>> username_exist_wot_blitz_ru(123123)
+    False
+    """
+    if type(username) != str:# or type(username) != unicode:
+        return False
+    if len(username) < 3 or len(username) > 25:
+        return False
+    if " " in username:
+        return False
+
+    req_url = "https://api.wotblitz.ru/wotb/account/list/?application_id={}&type=exact&search={}".format(\
+        config.wargaming_id, username)
+    req = requests.get(req_url).json()
+    if req["meta"]["count"] == 1:
+        return True
+    else:
+        return False
 
 
 
