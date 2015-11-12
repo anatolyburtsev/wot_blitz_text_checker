@@ -20,10 +20,10 @@ def how_many_posts_in_queue(vk_group):
         post_in_queue = 0
         while is_exist_post_in_queue:
             time_for_post_in_future = int(convert_hours_and_day_to_epoch(hour, post_in_queue))
-            if time_for_post_in_future not in postponed_posts_time and time_for_post_in_future > time.time():
-                is_exist_post_in_queue = False
-            else:
+            if time_for_post_in_future in postponed_posts_time or time_for_post_in_future < time.time():
                 post_in_queue += 1
+            else:
+                is_exist_post_in_queue = False
 
         result.append((tag, hour, post_in_queue))
     return result
