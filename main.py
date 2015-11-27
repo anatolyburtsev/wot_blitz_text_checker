@@ -4,6 +4,8 @@ from flask import request
 from flask import render_template
 import wg_api
 import sql_result_api
+import logic
+import config
 
 app = Flask(__name__)
 
@@ -20,10 +22,9 @@ def when_my_post():
 
 @app.route('/whenmypost', methods=["POST"])
 def when_my_post_post():
-    username = request.form["nickname"]
-    if not wg_api.username_exist_wot_blitz_ru(username):
-        return "Mistake in username or it isn't exist at RU server"
-    return username.upper()
+    username = str(request.form["nickname"])
+    result = logic.when_my_post(username, config.vk_group)
+    return result
 
 
 @app.route('/text4nick')
@@ -53,5 +54,5 @@ def chart():
 
 if __name__ == '__main__':
     #app.debug = True
-    #app.run()
-    app.run(host='0.0.0.0', port=80)
+    app.run()
+    #app.run(host='0.0.0.0', port=5000)

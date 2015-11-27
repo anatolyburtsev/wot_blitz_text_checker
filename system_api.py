@@ -25,5 +25,17 @@ def convert_hours_and_day_to_epoch(time_string, skip_days=0):
     result_time = datetime.datetime(fd.tm_year, fd.tm_mon, fd.tm_mday, hours, minutes).strftime('%s')
     return result_time
 
+
+def day_and_month_from_epoch(epoch):
+    """
+    >>> day_and_month_from_epoch(1449122400)
+    "27 Nov 2015"
+    """
+    epoch = int(epoch)
+    return time.strftime("%d %b %Y", time.gmtime(epoch))
+
 # print convert_hours_and_day_to_epoch("10:00")
 # print convert_hours_and_day_to_epoch(10)
+
+if __name__ == "__main__":
+    print day_and_month_from_epoch(1441866800)
