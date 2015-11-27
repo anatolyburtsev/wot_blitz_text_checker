@@ -17,13 +17,21 @@ def how_many_posts_in_queue(vk_group):
     schedule = sql_schedule_api.get_all_tags_and_time_in_order()
     for tag, hour in schedule:
         is_exist_post_in_queue = True
+        #first_skip_excusable
+        first_skip = False
         post_in_queue = 1
         while is_exist_post_in_queue:
             time_for_post_in_future = int(convert_hours_and_day_to_epoch(hour, post_in_queue))
-            if time_for_post_in_future in postponed_posts_time:# or time_for_post_in_future < time.time():
+            if time_for_post_in_future in postponed_posts_time:
+                post_in_queue += 1
+                first_skip = False
+            elif not first_skip:
+                first_skip = True
                 post_in_queue += 1
             else:
                 is_exist_post_in_queue = False
+
+
 
         result.append((tag, hour, post_in_queue-1))
     return result
