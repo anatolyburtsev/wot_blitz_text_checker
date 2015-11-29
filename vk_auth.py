@@ -11,6 +11,7 @@ import json
 from urllib import urlencode
 import time
 import logging
+import os
 
 
 class RecursionError(Exception):
@@ -18,6 +19,10 @@ class RecursionError(Exception):
 
 
 class APIErrorException(Exception):
+    pass
+
+
+class AccessTokenExpiredException(Exception):
     pass
 
 
@@ -42,6 +47,8 @@ def call_api(method, params, token, launch_counter=0):
             return True
         # Too many requests per second - error 6
         # captcha - error 14
+        elif result_raw["error"]["error_code"] == 5:
+            raise AccessTokenExpiredException
         elif result_raw["error"]["error_code"] == 6 or result_raw["error"]["error_code"] == 14:
             time.sleep(5 + 15*launch_counter)
             logging.debug("Too many requests per second. method:" + method + " params:" + str(params))
@@ -155,7 +162,7 @@ def get_token(username, password, application_id, scopes):
             user_id = f.readline()
             token = f.readline()
             call_api("messages.get", [("count", 1)], token)
-    except: #IOError or KeyError:
+    except (AccessTokenExpiredException, IOError): #IOError or KeyError:
         logging.info("token for vk is outdated, start getting new")
         token, user_id = auth(username, password, application_id, scopes)
         logging.info("got new token for vk")
