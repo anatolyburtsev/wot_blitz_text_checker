@@ -22,8 +22,12 @@ def when_my_post():
 
 @app.route('/whenmypost', methods=["POST"])
 def when_my_post_post():
-    username = str(request.form["nickname"])
-    result = logic.when_my_post(username, config.vk_group)
+    try:
+        username = str(request.form["nickname"])
+    except UnicodeEncodeError:
+        result = u'Ник должен быть написан латинскими буквами'
+    else:
+        result = logic.when_my_post(username, config.vk_group)
     return result
 
 
