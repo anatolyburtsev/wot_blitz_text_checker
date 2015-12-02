@@ -20,11 +20,17 @@ def show_db():
 
 
 def clean_db():
-    curs_clans.execute("delete from " + clans_table_name)
+    try:
+        curs_clans.execute("delete from " + clans_table_name)
+    except sqlite3.OperationalError:
+        pass
 
 
 def drop_db():
-    curs_clans.execute('drop table ' + clans_table_name)
+    try:
+        curs_clans.execute('drop table ' + clans_table_name)
+    except sqlite3.OperationalError:
+        pass
 
 
 def save_clan_data(clan_data_dict):
