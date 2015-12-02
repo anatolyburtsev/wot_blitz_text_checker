@@ -3,6 +3,7 @@ __author__ = 'onotole'
 import config
 import doctest
 import requests
+import logging
 import re
 
 
@@ -124,10 +125,103 @@ def username_exist_wot_blitz_ru(username):
         return False
 
 
+def get_users_data_by_id(user_id):
+    assert str(user_id).isdigit()
+    user_id = str(user_id)
+    req_url = "https://api.wotblitz.ru/wotb/account/info/?application_id={}&account_id={}".format(\
+        config.wargaming_id, user_id)
+    req = requests.get(req_url).json()
+    try:
+        nickname = req["data"][user_id]["nickname"]
+        damage_dealt = req["data"][user_id]["statistics"]["all"]["damage_dealt"]
+        frags = req["data"][user_id]["statistics"]["all"]["frags"]
+    except KeyError:
+        logging.error("bad user id: " + str(user_id))
+        raise
+        # return None
+    return {"nickname": nickname, "damage_dealt": damage_dealt, "frags": frags}
 
-# if __name__ == "__main__":
-#     #print(get_clan_id_by_tag("XG"))
-#     #print(get_nickname_by_id([30926868]))
-#     #check_text_for_user_from_clans("blah blah2*blah3")
-#     #print (get_nicknames_by_clan_tag("XG"))
-#     print(check_text_for_user_from_clans("WubZero % a;slkdjf aabs liasdflk Lihei 4 Gadino_"))
+
+def get_data_for_all_user_from_clan(clan_id):
+    members_list = [str(x) for x in get_clans_members_list_by_id(clan_id)]
+    req_url = "https://api.wotblitz.ru/wotb/account/info/?application_id={}" \
+              "&fields=statistics.all.frags%2Cnickname%2Cstatistics.all.damage_dealt&" \
+              "account_id={}".format(config.wargaming_id, ",".join(members_list))
+    req = requests.get(req_url).json()
+    try:
+        data = req["data"]
+    except:
+        raise
+    result_user_data = dict()
+    # {user_id, [nickname, dmg, frags]}
+    for user_id, user_data in data.items():
+        try:
+            nickname = user_data["nickname"]
+            dmg = user_data["statistics"]["all"]["damage_dealt"]
+            frags = user_data["statistics"]["all"]["frags"]
+        except Exception as e:
+            print e
+            print "user_id = " + str(user_id)
+            print "user_data = " + str(user_data)
+        result_user_data[user_id] = [nickname, dmg, frags]
+    return result_user_data
+
+
+
+def get_clans_members_list_by_id(clan_id):
+    assert str(clan_id).isdigit()
+    clan_id = str(clan_id)
+    req_url = "https://api.wotblitz.ru/wotb/clans/info/?application_id={}&fields=members_ids&clan_id={}".format(\
+        config.wargaming_id, clan_id)
+    req = requests.get(req_url).json()
+    try:
+        members_ids = req["data"][clan_id]["members_ids"]
+    except KeyError:
+        logging.error("bad clan id: " + clan_id)
+        raise
+    return members_ids
+
+
+def get_all_clans_list():
+    init_req_url = "https://api.wotblitz.ru/wotb/clans/list/?application_id={}&fields=clan_id%2Ctag&limit=1".format(
+        config.wargaming_id
+    )
+
+    req = requests.get(init_req_url).json()
+    number_of_clans = req["meta"]["total"]
+    all_clans_data = dict()
+    S = requests.session()
+
+    for page_no in range(number_of_clans/100 +1):
+        req_url = "https://api.wotblitz.ru/wotb/clans/list/?application_id={}&fields=clan_id%2Ctag%2Cmembers_co" \
+                  "unt&limit=100".format(config.wargaming_id)
+
+        if page_no > 0:
+            req_url += "&page_no={}".format(str(page_no))
+
+        req = S.get(req_url).json()
+        try:
+            small_clan_data = req["data"]
+        except KeyError:
+            print req_url
+            print req
+            raise
+        for clan_data in small_clan_data:
+            all_clans_data[clan_data["clan_id"]] = [clan_data["tag"], clan_data["members_count"]]
+        # print "page number " + str(page_no) + " done"
+
+    return all_clans_data
+
+
+
+
+if __name__ == "__main__":
+    # print(get_clan_id_by_tag("XG"))
+    # print(get_nicknames_by_ids([30926868]))
+    # check_text_for_user_from_clans("blah blah2*blah3")
+    # print (get_nicknames_by_clan_tag("XG"))
+    # print(check_text_for_user_from_clans("WubZero % a;slkdjf aabs liasdflk Lihei 4 Gadino_"))
+    # print get_users_data_by_id(1388496)
+    # print get_clans_members_list_by_id(10)
+    # print get_all_clans_list()
+    print get_data_for_all_user_from_clan(855)
