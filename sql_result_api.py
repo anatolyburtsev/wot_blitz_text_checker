@@ -29,5 +29,5 @@ def get_data_from_db():
 # init_db()
 #save_to_db([(u'pewtag', 10, 2), (u'drawtag', 12, 4), (u'pewtag', 22, 16)])
 # print get_data_from_db()
-# if __name__ == "__main__":
-#     print (get_data_from_db())
+if __name__ == "__main__":
+    print (get_data_from_db())

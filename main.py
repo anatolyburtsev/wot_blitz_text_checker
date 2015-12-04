@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from flask import Flask
-from flask import request
 from flask import render_template
-import wg_api
-import sql_result_api
-import logic
+from flask import request
+
+import clan_event_db
 import config
+import logic
+import sql_result_api
+import wg_api
 
 app = Flask(__name__)
 
@@ -46,6 +48,7 @@ def my_form_post():
 
 
 @app.route("/")
+@app.route("/vk_queue")
 def chart():
     # labels = ["January","February","March","April","May","June","July","August"]
     # values = [10,9,8,7,6,4,7,8]
@@ -56,7 +59,17 @@ def chart():
     return render_template('chart.html', values=values, labels=labels)
 
 
+@app.route("/clan_event")
+def show_clan_event_data():
+    # labels = ["XG","XG-A","XG-T","EQ","CPA","OS_H","PAKU","TOP-A","ACE-S","EXE","3AKOH", "PC","SLM","-NO-","PX_TM","HARDA","BOSS",
+    #      "GWARD","AIR","DALE"]
+    # values = [0, 73483, 6399, 43888, 0, 184961, 66410, 180025, 6361, 115999, 0, 39648, 0, 0, 32142, 0, 4195, 0, 26642, 0]
+    labels,values = clan_event_db.get_clans_data_from_db()
+    max_value = 1.2 * max(values)
+    return render_template('clan_event.html', values = values, labels = labels, max_value = max_value)
+
+
 if __name__ == '__main__':
     #app.debug = True
-    app.run()
-    #app.run(host='0.0.0.0', port=5000)
+    #app.run()
+    app.run(host='0.0.0.0', port=5000)

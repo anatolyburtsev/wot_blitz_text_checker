@@ -142,11 +142,15 @@ def get_users_data_by_id(user_id):
     return {"nickname": nickname, "damage_dealt": damage_dealt, "frags": frags}
 
 
-def get_data_for_all_user_from_clan(clan_id):
-    members_list = [str(x) for x in get_clans_members_list_by_id(clan_id)]
+def get_data_for_all_user_from_clans(clans_id):
+    assert type(clans_id) == list
+    all_members_list = []
+    for clan_id in clans_id:
+        members_list = [str(x) for x in get_clans_members_list_by_id(clan_id)]
+        all_members_list += members_list
     req_url = "https://api.wotblitz.ru/wotb/account/info/?application_id={}" \
               "&fields=statistics.all.frags%2Cnickname%2Cstatistics.all.damage_dealt&" \
-              "account_id={}".format(config.wargaming_id, ",".join(members_list))
+              "account_id={}".format(config.wargaming_id, ",".join(all_members_list))
     req = requests.get(req_url).json()
     try:
         data = req["data"]

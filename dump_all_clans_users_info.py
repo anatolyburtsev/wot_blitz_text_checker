@@ -13,10 +13,11 @@ def init_db():
     tblcmd = 'create table if not exists ' + users_table_name + ' (id int(10), name char(30), date DATETIME,' \
                                                                 'clan_id int(7), damage int(10), frags int(6))'
     curs_users.execute(tblcmd)
+    tblcmd = 'create table if not exists '
 
 
 def show_db():
-    curs_users.execute('select * from ' + users_table_name)
+    curs_users.execute('select * from ' + users_table_name + ' limit 10;')
     print(curs_users.fetchall())
 
 
@@ -80,6 +81,15 @@ def save_all_users_data():
     conn_users.commit()
 
 
+def save_user_clan_relationship():
+    init_db_cmd = "create table if not exists clans (clan_id int(8) unique, user_id int(10));"
+    curs_users.execute(init_db_cmd)
+
+    for clan_id in get_all_clans_ids():
+        members = wg_api.get_clans_members_list_by_id(clan_id)
+        for user_id in members:
+            curs_users.execute("insert into clans values (?,?)", (clan_id, user_id))
+    conn_users.commit()
 
 
 # # clean_db()
@@ -91,6 +101,7 @@ if __name__ == "__main__":
     # save_all_users_data_from_clan(10)
     # show_db()
     # print get_all_clans_ids()
-    clean_db()
-    save_all_users_data()
+    # clean_db()
+    #save_all_users_data()
+    save_user_clan_relationship()
 # show_db()
