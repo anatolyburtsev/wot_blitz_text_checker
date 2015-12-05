@@ -1,4 +1,4 @@
 MAILTO=anatolyburtsev@yandex.ru
 
 */5 *   *   *   *   onotole     cd /home/onotole/wot_blitz_text_checker && flock -w 0 /tmp/.get_vk_stat python update_queue_info.py
-*/5 *   *   *   *   onotole     cd /home/onotole/wot_blitz_text_checker && flock -w 0 /tmp/.get_event_stat python clan_event_db.py
+*/8 *   *   *   *   onotole     cd /home/onotole/wot_blitz_text_checker && flock -w 0 /tmp/.get_event_stat python clan_event_db.py
