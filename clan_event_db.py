@@ -149,5 +149,5 @@ if __name__ == "__main__":
     # drop_db(clans_db_temp_name)
     # init_db()
     # init_clans_db()
-    # collect_data_for_all_clans(clans)
-    print get_distance_between_clan_and_top()
+    collect_data_for_all_clans(clans)
+    # print get_distance_between_clan_and_top()
