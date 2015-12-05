@@ -2,6 +2,8 @@ import wg_api
 import config
 import sqlite3
 import datetime
+import logging
+import math
 
 db_name = "event_dec_2015"
 conn_db = sqlite3.connect(db_name + ".sqlite3")
@@ -53,13 +55,24 @@ def get_clan_tag_from_db(clan_id):
     assert str(clan_id).isdigit()
     cmd = 'select clan_tag from  ' + clans_db_name + ' where clan_id like ' + str(clan_id) +" ;"
     curs_db.execute(cmd)
-    return curs_db.fetchone()[0]
+    try:
+        result = curs_db.fetchone()[0]
+    except TypeError:
+        logging.error("Problem with clan id: " + str(clan_id))
+        raise
+    return result
+
 
 def get_clan_id_from_db(clan_tag):
     assert type(clan_tag) == str or type(clan_tag) == unicode
     cmd = 'select clan_id from  ' + clans_db_name + ' where clan_tag like "' + str(clan_tag) +'" ;'
     curs_db.execute(cmd)
-    return curs_db.fetchone()[0]
+    try:
+        result = curs_db.fetchone()[0]
+    except TypeError:
+        logging.error("Problem with clan tag: " + str(clan_tag))
+        raise
+    return result
 
 
 def save_user_data_to_table(user_id, username, clan_id, clan_tag, dmg, frags, dt, tbl_name):
@@ -68,8 +81,8 @@ def save_user_data_to_table(user_id, username, clan_id, clan_tag, dmg, frags, dt
 
 
 def collect_data_for_clan_members(clan_id):
-    if not str(clan_id).isdigit():
-        clan_id = get_clan_id_from_db(clan_id)
+    # if not str(clan_id).isdigit():
+    clan_id = get_clan_id_from_db(clan_id)
     data = wg_api.get_data_for_all_user_from_clans([clan_id])
     dt = datetime.datetime.now()
     clan_tag = get_clan_tag_from_db(clan_id)
@@ -105,11 +118,27 @@ def collect_data_for_all_clans(clans_list):
     shift_data_from_db_to_db(clans_db_temp_name, clans_db_name)
     conn_db.commit()
 
+
 def get_clans_data_from_db():
     cmd = "select clan_tag,dmg from " + clans_db_name + " order by dmg DESC;"
     curs_db.execute(cmd)
     fetched = curs_db.fetchall()
     return [x[0] for x in fetched],[x[1] for x in fetched]
+
+
+def get_distance_between_clan_and_top(clan_tag="XG"):
+    cmd = "select dmg-(select max(dmg) from clans_data where clan_tag not like '" + clan_tag +\
+          "') from clans_data where clan_tag like '" + clan_tag + "';"
+    curs_db.execute(cmd)
+    result = int(curs_db.fetchone()[0])
+    result_E100 = abs(result) / 2300
+    if abs(result) > 500000:
+        result = divmod(result, 100000)[0]
+        result = str(float(result)/10) + "M"
+    elif abs(result) > 800:
+        result = divmod(result,  100)[0]
+        result = str(float(result)/10) + "K"
+    return [result, result_E100]
 
 
 if __name__ == "__main__":
@@ -120,4 +149,5 @@ if __name__ == "__main__":
     # drop_db(clans_db_temp_name)
     # init_db()
     # init_clans_db()
-    collect_data_for_all_clans(clans)
+    # collect_data_for_all_clans(clans)
+    print get_distance_between_clan_and_top()

@@ -66,7 +66,13 @@ def show_clan_event_data():
     # values = [0, 73483, 6399, 43888, 0, 184961, 66410, 180025, 6361, 115999, 0, 39648, 0, 0, 32142, 0, 4195, 0, 26642, 0]
     labels,values = clan_event_db.get_clans_data_from_db()
     max_value = 1.2 * max(values)
-    return render_template('clan_event.html', values = values, labels = labels, max_value = max_value)
+    distance, distance_E100 = clan_event_db.get_distance_between_clan_and_top()
+    if distance[0] != "-":
+        diff = u"Мы опережаем ближайшего конкурента на: " + str(distance)
+    else:
+        diff = u"Мы отстаем от лидера на целых: " + str(distance) + u"!!! Давайте поднажмем!!!"
+    return render_template('clan_event.html', values = values, labels = labels, max_value = max_value,
+                           diff_message=diff, E100_count = distance_E100)
 
 
 if __name__ == '__main__':
