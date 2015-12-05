@@ -56,7 +56,7 @@ def get_clan_tag_from_db(clan_id):
     return curs_db.fetchone()[0]
 
 def get_clan_id_from_db(clan_tag):
-    assert type(clan_tag) == str
+    assert type(clan_tag) == str or type(clan_tag) == unicode
     cmd = 'select clan_id from  ' + clans_db_name + ' where clan_tag like "' + str(clan_tag) +'" ;'
     curs_db.execute(cmd)
     return curs_db.fetchone()[0]
