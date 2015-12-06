@@ -19,7 +19,7 @@ def get_clan_id_by_tag(clan_tag):
     10
     """
     assert type(clan_tag) == str or type(clan_tag) == unicode
-    req_url = 'https://api.wotblitz.ru/wotb/clans/list/?application_id=' + config.wargaming_id + '' \
+    req_url = 'http://api.wotblitz.ru/wotb/clans/list/?application_id=' + config.wargaming_id + '' \
         '&fields=tag%2Cclan_id&search=' + clan_tag
     req = requests.get(req_url).json()
     for clan_data in req["data"]:
@@ -38,7 +38,7 @@ def get_nicknames_by_ids(user_ids):
     assert type(user_ids) == list
     if type(user_ids[0]) == int:
         user_ids = [str(x) for x in user_ids]
-    req_url = 'https://api.wotblitz.ru/wotb/account/info/?application_id=' + config.wargaming_id + '&fields=nickname&' \
+    req_url = 'http://api.wotblitz.ru/wotb/account/info/?application_id=' + config.wargaming_id + '&fields=nickname&' \
         'account_id=' + ",".join(user_ids)
     req = requests.get(req_url).json()
     clan_nicknames = set()
@@ -60,7 +60,7 @@ def get_nicknames_by_clan_tag(clan_tag):
     True
     """
     clan_id = get_clan_id_by_tag(clan_tag)
-    req_url = "https://api.wotblitz.ru/wotb/clans/info/?application_id=" + config.wargaming_id + \
+    req_url = "http://api.wotblitz.ru/wotb/clans/info/?application_id=" + config.wargaming_id + \
               "&fields=members_ids&clan_id=" + str(clan_id)
     req = requests.get(req_url).json()
     #print(req)
@@ -116,7 +116,7 @@ def username_exist_wot_blitz_ru(username):
     if " " in username:
         return False
 
-    req_url = "https://api.wotblitz.ru/wotb/account/list/?application_id={}&type=exact&search={}".format(\
+    req_url = "http://api.wotblitz.ru/wotb/account/list/?application_id={}&type=exact&search={}".format(\
         config.wargaming_id, username)
     req = requests.get(req_url).json()
     if req["meta"]["count"] == 1:
@@ -128,7 +128,7 @@ def username_exist_wot_blitz_ru(username):
 def get_users_data_by_id(user_id):
     assert str(user_id).isdigit()
     user_id = str(user_id)
-    req_url = "https://api.wotblitz.ru/wotb/account/info/?application_id={}&account_id={}".format(\
+    req_url = "http://api.wotblitz.ru/wotb/account/info/?application_id={}&account_id={}".format(\
         config.wargaming_id, user_id)
     req = requests.get(req_url).json()
     try:
@@ -148,7 +148,7 @@ def get_data_for_all_user_from_clans(clans_id):
     for clan_id in clans_id:
         members_list = [str(x) for x in get_clans_members_list_by_id(clan_id)]
         all_members_list += members_list
-    req_url = "https://api.wotblitz.ru/wotb/account/info/?application_id={}" \
+    req_url = "http://api.wotblitz.ru/wotb/account/info/?application_id={}" \
               "&fields=statistics.all.frags%2Cnickname%2Cstatistics.all.damage_dealt&" \
               "account_id={}".format(config.wargaming_id, ",".join(all_members_list))
     req = requests.get(req_url).json()
@@ -176,7 +176,7 @@ def get_data_for_all_user_from_clans(clans_id):
 def get_clans_members_list_by_id(clan_id):
     assert str(clan_id).isdigit()
     clan_id = str(clan_id)
-    req_url = "https://api.wotblitz.ru/wotb/clans/info/?application_id={}&fields=members_ids&clan_id={}".format(\
+    req_url = "http://api.wotblitz.ru/wotb/clans/info/?application_id={}&fields=members_ids&clan_id={}".format(\
         config.wargaming_id, clan_id)
     req = requests.get(req_url).json()
     try:
@@ -188,7 +188,7 @@ def get_clans_members_list_by_id(clan_id):
 
 
 def get_all_clans_list():
-    init_req_url = "https://api.wotblitz.ru/wotb/clans/list/?application_id={}&fields=clan_id%2Ctag&limit=1".format(
+    init_req_url = "http://api.wotblitz.ru/wotb/clans/list/?application_id={}&fields=clan_id%2Ctag&limit=1".format(
         config.wargaming_id
     )
 
@@ -198,7 +198,7 @@ def get_all_clans_list():
     S = requests.session()
 
     for page_no in range(number_of_clans/100 +1):
-        req_url = "https://api.wotblitz.ru/wotb/clans/list/?application_id={}&fields=clan_id%2Ctag%2Cmembers_co" \
+        req_url = "http://api.wotblitz.ru/wotb/clans/list/?application_id={}&fields=clan_id%2Ctag%2Cmembers_co" \
                   "unt&limit=100".format(config.wargaming_id)
 
         if page_no > 0:

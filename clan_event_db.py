@@ -4,8 +4,8 @@ import sqlite3
 import datetime
 import logging
 import time
-import requests
 import math
+import statprof
 
 db_name = "event_dec_2015"
 conn_db = sqlite3.connect(db_name + ".sqlite3")
@@ -28,8 +28,6 @@ def init_db():
     cmd = 'create table ' + clans_db_temp_name + ' (clan_id int(10), clan_tag char(6), dmg int(11));'
     curs_db.execute(cmd)
     conn_db.commit()
-
-
 
 
 def init_clans_db():
@@ -156,7 +154,7 @@ if __name__ == "__main__":
     # drop_db(clans_db_temp_name)
     # init_db()
     # init_clans_db()
-    t = time.time()
+    # t = time.time()
     collect_data_for_all_clans(clans)
-    print ("works for " + str(time.time() -t) + " secs")
+    # print ("works for " + str(time.time() -t) + " secs")
     # print get_distance_between_clan_and_top()
