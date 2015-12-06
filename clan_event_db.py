@@ -5,7 +5,6 @@ import datetime
 import logging
 import time
 import math
-import statprof
 
 db_name = "event_dec_2015"
 conn_db = sqlite3.connect(db_name + ".sqlite3")
