@@ -3,6 +3,8 @@ import config
 import sqlite3
 import datetime
 import logging
+import time
+import requests
 import math
 
 db_name = "event_dec_2015"
@@ -108,8 +110,12 @@ def collect_data_for_all_clans(clans_list):
     clean_db(clans_db_temp_name)
 
     for clan_tag in clans_list:
-        collect_data_for_clan_members(clan_tag)
-
+        try:
+            collect_data_for_clan_members(clan_tag)
+        except Exception as e:
+            print ("Error:" + str(e))
+            print ("problem with clan_tag:" + str(clan_tag))
+    # conn_db.commit()
 
     cmd = "insert into " + clans_db_temp_name + " select cd.clan_id,cd.clan_tag,cd.dmg+dmg_diff from " + clans_db_name\
           +" as cd join (select current.clan_id,sum(current.dmg-last.dmg) as dmg_diff from current inner join last " \
@@ -149,5 +155,7 @@ if __name__ == "__main__":
     # drop_db(clans_db_temp_name)
     # init_db()
     # init_clans_db()
+    t = time.time()
     collect_data_for_all_clans(clans)
+    print ("works for " + str(time.time() -t) + " secs")
     # print get_distance_between_clan_and_top()

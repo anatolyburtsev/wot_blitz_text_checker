@@ -155,6 +155,7 @@ def get_data_for_all_user_from_clans(clans_id):
     try:
         data = req["data"]
     except:
+        logging.error("PROBLEM with clan_id: " + str(clans_id))
         raise
     result_user_data = dict()
     # {user_id, [nickname, dmg, frags]}
