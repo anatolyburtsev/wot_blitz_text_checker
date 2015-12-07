@@ -127,7 +127,7 @@ def get_clans_data_from_db():
     cmd = "select clan_tag,dmg from " + clans_db_name + " order by dmg DESC;"
     curs_db.execute(cmd)
     fetched = curs_db.fetchall()
-    return [x[0] for x in fetched],[x[1] for x in fetched]
+    return [str(x[0]) for x in fetched],[x[1] for x in fetched]
 
 
 def get_distance_between_clan_and_top(clan_tag="XG"):
@@ -154,6 +154,7 @@ if __name__ == "__main__":
     # init_db()
     # init_clans_db()
     # t = time.time()
-    collect_data_for_all_clans(clans)
+    clans_list = get_clans_data_from_db()[0]
+    collect_data_for_all_clans(clans_list)
     # print ("works for " + str(time.time() -t) + " secs")
     # print get_distance_between_clan_and_top()
