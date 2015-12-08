@@ -59,7 +59,7 @@ def chart():
     return render_template('chart.html', values=values, labels=labels)
 
 
-@app.route("/pochku_prodam_za_xg")
+@app.route("/kto_tut_samyj_chotkij")
 def show_clan_event_data():
     # labels = ["XG","XG-A","XG-T","EQ","CPA","OS_H","PAKU","TOP-A","ACE-S","EXE","3AKOH", "PC","SLM","-NO-","PX_TM","HARDA","BOSS",
     #      "GWARD","AIR","DALE"]
