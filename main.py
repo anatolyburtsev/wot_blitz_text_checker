@@ -65,7 +65,7 @@ def show_clan_event_data():
     #      "GWARD","AIR","DALE"]
     # values = [0, 73483, 6399, 43888, 0, 184961, 66410, 180025, 6361, 115999, 0, 39648, 0, 0, 32142, 0, 4195, 0, 26642, 0]
     labels,values = clan_event_db.get_clans_data_from_db()
-    labels  = [ x if x == "XG" else u"Пидарасы" for x in labels]
+    labels  = [ x if x == "XG" else u"соперники" for x in labels]
     max_value = 1.2 * max(values)
     distance, distance_E100 = clan_event_db.get_distance_between_clan_and_top()
     if distance[0] != "-":
