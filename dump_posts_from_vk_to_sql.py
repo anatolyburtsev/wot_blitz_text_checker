@@ -52,7 +52,7 @@ def save_posts(posts):
             print "post number:" + str(counter)
         counter += 1
         # print post
-        post_id = post["id"]
+        post_id = "http://vk.com/wall-" + str(vk_api.get_group_id_by_url(config.vk_group)) + "_" + str(post["id"])
         likes = post["likes"]["count"]
         reposts = post["reposts"]["count"]
         comments = post["comments"]["count"]
@@ -87,6 +87,12 @@ def save_posts(posts):
         curs.execute(tblcmd, (post_id, likes, reposts, comments, text, date_unixtime,
                               date_datetime, weekday, month, photos, videos, audio, poll, link))
     conn.commit()
+
+    # сдвиг -3 часа
+    # select * from all_posts where date like "2016-03-30%";
+    # select post_id from all_posts where date like "2016-03% 07:00:%" order by likes desc limit 3;
+    # укажи месяц!!!!
+    # for i in {14,16,18,20,21,22}; do echo "Часов: ${i}:00"; echo "3 самых популярных поста:"; echo $( sqlite3 all_posts.sql "select post_id from all_posts where date like \"2016-03% $((i - 3)):00:%\" order by likes desc limit 3;"); done
 
 
 if __name__ == "__main__":

@@ -40,7 +40,7 @@ def get_all_posts(group_id):
     posts_data_raw = call_api("wall.get", [("owner_id", group_id), ("count", 1)], token)
     count = 100
     offset = -count
-    while offset + count < posts_data_raw[0]:
+    while offset + count < 500: #posts_data_raw[0]:
         offset += count
         # print "offset = {}".format(offset)
         posts_data_raw = call_api("wall.get", [("owner_id", group_id), ("count", count),
